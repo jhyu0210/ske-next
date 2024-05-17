@@ -8,7 +8,7 @@ import { useUploadThing } from "~/lib/uploadthing";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-const page = () => {
+const Page = () => {
   const router = useRouter();
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
   const [isPending, startTransition] = useTransition();
@@ -106,4 +106,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
