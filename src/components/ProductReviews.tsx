@@ -19,14 +19,14 @@ function splitArray<T>(array: Array<T>, numParts: number) {
 
   for (let i = 0; i < array.length; i++) {
     const index = i % numParts;
-    console.log("index", index);
+    // console.log("index", index);
     if (!result[index]) {
       result[index] = [];
     }
     result[index].push(array[i]);
-    console.log("Result array[index]:: ", result[index]);
+    // console.log("Result array[index]:: ", result[index]);
   }
-  console.log("Result array:: ", result);
+  // console.log("Result array:: ", result);
 
   return result;
 }
@@ -117,7 +117,7 @@ function ReviewGrid() {
   const column3 = splitArray(columns[2], 2);
   // console.log("column3", column3);
 
-  console.log("ReviewGrid columns", columns);
+  // console.log("ReviewGrid columns", columns);
   return (
     <div
       ref={containerRef}

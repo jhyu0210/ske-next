@@ -37,38 +37,26 @@ const authOptions: NextAuthConfig = {
       },
     }),
   ],
-  callbacks: {
-    jwt({ token, account, user }) {
-      if (account) {
-        token.accessToken = account.access_token
-        token.id = user?.id
-      }
-      return token
-    },
-    session({ session, token }) {
-        // I skipped the line below coz it gave me a TypeError
-        // session.accessToken = token.accessToken;
-        session.user.id = token.id;
-  
-        return session;
-      },
-  },
-  // callbacks:{
-  //   session: async ({ session, token }) => {
+  // callbacks: {
+  //   session: async ({ session, token, user }) => {
   //     if (session?.user) {
-  //       session.user.id = token.sub;
+  //       console.log(">>>>>>>>>>>>>>>", session);
+  //       session.user.id = user.id;
   //     }
   //     return session;
   //   },
-  //   jwt: async ({ user, token }) => {
-  //     if (user) {
-  //       token.uid = user.id;
-  //     }
-  //     return token;
-  //   },
   // },
-  session:{
-    strategy:'jwt'
+  callbacks: {
+    session: ({ session, token }) => ({
+      ...session,
+      user: {
+        ...session.user,
+        id: token.sub,
+      },
+    }),
+  },
+  session: {
+    strategy: "jwt",
   },
   basePath: BASE_PATH,
   secret: "process.env.NEXTAUTH_SECRET",

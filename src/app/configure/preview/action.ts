@@ -19,7 +19,7 @@ export const createCheckoutSession = async ({
   }
 
   const session = await auth();
-  console.log("preview actions session:", session);
+  console.log("================preview actions session:", session);
   const user = session?.user;
   if (!user) {
     throw new Error("You need to login");
