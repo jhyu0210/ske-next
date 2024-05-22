@@ -55,7 +55,7 @@ export const FINISHES = {
   options: [
     {
       label: "Smooth Finish",
-      value: "somooth",
+      value: "smooth",
       description: undefined,
       price: 0,
     },

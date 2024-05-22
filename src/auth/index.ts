@@ -1,6 +1,6 @@
 import NextAuth, { User, NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import bcrypt from "bcrypt";
+// import bcrypt from "bcrypt";
 // import email from "next-auth/providers/email";
 // import { db } from "~/server/db";
 import { login } from "./auth";
@@ -37,6 +37,39 @@ const authOptions: NextAuthConfig = {
       },
     }),
   ],
+  callbacks: {
+    jwt({ token, account, user }) {
+      if (account) {
+        token.accessToken = account.access_token
+        token.id = user?.id
+      }
+      return token
+    },
+    session({ session, token }) {
+        // I skipped the line below coz it gave me a TypeError
+        // session.accessToken = token.accessToken;
+        session.user.id = token.id;
+  
+        return session;
+      },
+  },
+  // callbacks:{
+  //   session: async ({ session, token }) => {
+  //     if (session?.user) {
+  //       session.user.id = token.sub;
+  //     }
+  //     return session;
+  //   },
+  //   jwt: async ({ user, token }) => {
+  //     if (user) {
+  //       token.uid = user.id;
+  //     }
+  //     return token;
+  //   },
+  // },
+  session:{
+    strategy:'jwt'
+  },
   basePath: BASE_PATH,
   secret: "process.env.NEXTAUTH_SECRET",
   pages: {

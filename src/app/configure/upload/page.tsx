@@ -56,6 +56,7 @@ const Page = () => {
             "image/png": [".png"],
             "image/jpg": [".jpg"],
             "image/jpeg": [".jpeg"],
+            "image/avif": [".avif"],
           }}
           onDragEnter={() => setIsDragOver(true)}
           onDragLeave={() => setIsDragOver(false)}

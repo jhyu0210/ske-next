@@ -1,4 +1,4 @@
-// import React from 'react'
+import React from "react";
 
 import { auth } from "~/auth";
 import WhoAmiServerAction from "./WhoAmiServerAction";

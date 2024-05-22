@@ -1,13 +1,13 @@
 "use client";
 
-import { useRef, useState } from "react";
+// import HandleComponent from '@/components/HandleComponent'
 import { AspectRatio } from "~/components/ui/aspect-ratio";
-import NextImage from "next/image";
+import { ScrollArea } from "~/components/ui/scroll-area";
 import { cn, formatPrice } from "~/lib/utils";
+import NextImage from "next/image";
 import { Rnd } from "react-rnd";
 import { RadioGroup } from "@headlessui/react";
-import HandleComponent from "~/components/HandleComponent";
-import { ScrollArea } from "~/components/ui/scroll-area";
+import { useRef, useState } from "react";
 import {
   COLORS,
   FINISHES,
@@ -15,22 +15,23 @@ import {
   MODELS,
 } from "~/app/validators/option-validator";
 import { Label } from "~/components/ui/label";
-import { Button } from "~/components/ui/button";
-import { ArrowRight, Check, ChevronsUpDown } from "lucide-react";
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
-import {
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
+import { Button } from "~/components/ui/button";
+import { ArrowRight, Check, ChevronsUpDown } from "lucide-react";
 import { BASE_PRICE } from "~/config/products";
 import { useUploadThing } from "~/lib/uploadthing";
-import { toast } from "~/components/ui/use-toast";
+import { useToast } from "~/components/ui/use-toast";
+// import { useMutation } from "~tanstack/react-query";
+// import { saveConfig as _saveConfig, SaveConfigArgs } from "./actions";
 import { useRouter } from "next/navigation";
-import { saveConfig as _saveConfig, SaveConfigArgs } from "./action";
+import HandleComponent from "~/components/HandleComponent";
 import { useMutation } from "@tanstack/react-query";
+import { SaveConfigArgs, saveConfig as _saveConfig } from "./action";
 
 interface DesignConfiguratorProps {
   configId: string;
@@ -43,33 +44,7 @@ const DesignConfigurator = ({
   imageUrl,
   imageDimensions,
 }: DesignConfiguratorProps) => {
-  const [options, setOptions] = useState<{
-    color: (typeof COLORS)[number];
-    model: (typeof MODELS.options)[number];
-    material: (typeof MATERIALS.options)[number];
-    finish: (typeof FINISHES.options)[number];
-  }>({
-    color: COLORS[0],
-    model: MODELS.options[0],
-    material: MATERIALS.options[0],
-    finish: FINISHES.options[0],
-  });
-  // console.log(options);
-
-  const phoneCaseRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [renderedPosition, setRenderedPosition] = useState({
-    x: 150,
-    y: 205,
-  });
-  const [renderedDimension, setRenderedDimension] = useState({
-    width: imageDimensions.width / 4,
-    height: imageDimensions.height / 4,
-  });
-  console.log("onResizeStop::Size::", renderedDimension);
-  // console.log("Options :", options);
-  console.log("onResizeStop::좌표::", renderedPosition);
-  const { startUpload } = useUploadThing("imageUploader");
+  const { toast } = useToast();
   const router = useRouter();
 
   const { mutate: saveConfig, isPending } = useMutation({
@@ -89,6 +64,33 @@ const DesignConfigurator = ({
     },
   });
 
+  const [options, setOptions] = useState<{
+    color: (typeof COLORS)[number];
+    model: (typeof MODELS.options)[number];
+    material: (typeof MATERIALS.options)[number];
+    finish: (typeof FINISHES.options)[number];
+  }>({
+    color: COLORS[0],
+    model: MODELS.options[0],
+    material: MATERIALS.options[0],
+    finish: FINISHES.options[0],
+  });
+
+  const [renderedDimension, setRenderedDimension] = useState({
+    width: imageDimensions.width / 4,
+    height: imageDimensions.height / 4,
+  });
+
+  const [renderedPosition, setRenderedPosition] = useState({
+    x: 150,
+    y: 205,
+  });
+
+  const phoneCaseRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const { startUpload } = useUploadThing("imageUploader");
+
   async function saveConfiguration() {
     try {
       const {
@@ -97,20 +99,19 @@ const DesignConfigurator = ({
         width,
         height,
       } = phoneCaseRef.current!.getBoundingClientRect();
+
       const { left: containerLeft, top: containerTop } =
         containerRef.current!.getBoundingClientRect();
 
       const leftOffset = caseLeft - containerLeft;
       const topOffset = caseTop - containerTop;
-      console.log("LeftOffset = ", leftOffset);
+
       const actualX = renderedPosition.x - leftOffset;
       const actualY = renderedPosition.y - topOffset;
-      console.log("======== actualX::: ", actualX);
 
       const canvas = document.createElement("canvas");
       canvas.width = width;
       canvas.height = height;
-      console.log("Canvas width::", canvas.width);
       const ctx = canvas.getContext("2d");
 
       const userImage = new Image();
@@ -131,24 +132,23 @@ const DesignConfigurator = ({
 
       const blob = base64ToBlob(base64Data, "image/png");
       const file = new File([blob], "filename.png", { type: "image/png" });
-      console.log("file to upload::: ", file);
 
       await startUpload([file], { configId });
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
       toast({
-        title: "Something went wrong!",
-        description: "Try again....",
+        title: "Something went wrong",
+        description:
+          "There was a problem saving your config, please try again.",
         variant: "destructive",
       });
     }
   }
+
   function base64ToBlob(base64: string, mimeType: string) {
-    const byteChars = atob(base64);
-    const byteNumbers = new Array(byteChars.length);
-    for (let i = 0; i < byteChars.length; i++) {
-      byteNumbers[i] = byteChars.charCodeAt(i);
-      // byteNumbers[i] = byteChars.charAt(i);
+    const byteCharacters = atob(base64);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
     const byteArray = new Uint8Array(byteNumbers);
     return new Blob([byteArray], { type: mimeType });
@@ -174,7 +174,6 @@ const DesignConfigurator = ({
             />
           </AspectRatio>
           <div className="absolute inset-0 bottom-px left-[3px] right-[3px] top-px z-40 rounded-[32px] shadow-[0_0_0_99999px_rgba(229,231,235,0.6)]" />
-
           <div
             className={cn(
               "absolute inset-0 bottom-px left-[3px] right-[3px] top-px rounded-[32px]",
@@ -184,6 +183,12 @@ const DesignConfigurator = ({
         </div>
 
         <Rnd
+          default={{
+            x: 150,
+            y: 205,
+            height: imageDimensions.height / 4,
+            width: imageDimensions.width / 4,
+          }}
           onResizeStop={(_, __, ref, ___, { x, y }) => {
             setRenderedDimension({
               height: parseInt(ref.style.height.slice(0, -2)),
@@ -195,12 +200,6 @@ const DesignConfigurator = ({
           onDragStop={(_, data) => {
             const { x, y } = data;
             setRenderedPosition({ x, y });
-          }}
-          default={{
-            x: 150,
-            y: 205,
-            height: imageDimensions.height / 4,
-            width: imageDimensions.width / 4,
           }}
           className="absolute z-20 border-[3px] border-primary"
           lockAspectRatio
@@ -222,18 +221,21 @@ const DesignConfigurator = ({
         </Rnd>
       </div>
 
-      <div className="flex h-[37.5rem] flex-col bg-white">
+      <div className="col-span-full flex h-[37.5rem] w-full flex-col bg-white lg:col-span-1">
         <ScrollArea className="relative flex-1 overflow-auto">
           <div
             aria-hidden="true"
-            className="abolute pointer-events-none inset-x-0 bottom-0 z-10 h-12 bg-gradient-to-t from-white"
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-12 bg-gradient-to-t from-white"
           />
+
           <div className="px-8 pb-12 pt-8">
             <h2 className="text-3xl font-bold tracking-tight">
               Customize your case
             </h2>
+
             <div className="my-6 h-px w-full bg-zinc-200" />
-            <div className="relative mt-4 h-full flex-col justify-between">
+
+            <div className="relative mt-4 flex h-full flex-col justify-between">
               <div className="flex flex-col gap-6">
                 <RadioGroup
                   value={options.color}
@@ -244,15 +246,15 @@ const DesignConfigurator = ({
                     }));
                   }}
                 >
-                  <Label>Colors: {options.color.label}</Label>
+                  <Label>Color: {options.color.label}</Label>
                   <div className="mt-3 flex items-center space-x-3">
                     {COLORS.map((color) => (
                       <RadioGroup.Option
                         key={color.label}
                         value={color}
-                        className={({ checked, active }) =>
+                        className={({ active, checked }) =>
                           cn(
-                            "justify-center, relative -m-0.5 flex cursor-pointer items-center rounded-full border-2 border-transparent p-0.5 focus:outline-none focus:ring-0 active:outline-none active:ring-0",
+                            "relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full border-2 border-transparent p-0.5 focus:outline-none focus:ring-0 active:outline-none active:ring-0",
                             {
                               [`border-${color.tw}`]: active || checked,
                             },
@@ -261,7 +263,6 @@ const DesignConfigurator = ({
                       >
                         <span
                           className={cn(
-                            // "bg-rose-900",
                             `bg-${color.tw}`,
                             "h-8 w-8 rounded-full border border-black border-opacity-10",
                           )}
@@ -272,13 +273,13 @@ const DesignConfigurator = ({
                 </RadioGroup>
 
                 <div className="relative flex w-full flex-col gap-3">
-                  <Label>Models</Label>
+                  <Label>Model</Label>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
-                        className="w-full justify-between"
-                        role="combobox"
                         variant="outline"
+                        role="combobox"
+                        className="w-full justify-between"
                       >
                         {options.model.label}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -313,6 +314,7 @@ const DesignConfigurator = ({
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
+
                 {[MATERIALS, FINISHES].map(
                   ({ name, options: selectableOptions }) => (
                     <RadioGroup
@@ -335,18 +337,18 @@ const DesignConfigurator = ({
                             value={option}
                             className={({ active, checked }) =>
                               cn(
-                                "relative block cursor-pointer border-2 border-zinc-200 bg-white px-6 py-4 shadow-sm outline-none ring-0 focus:outline-none sm:flex sm:justify-between",
+                                "relative block cursor-pointer rounded-lg border-2 border-zinc-200 bg-white px-6 py-4 shadow-sm outline-none ring-0 focus:outline-none focus:ring-0 sm:flex sm:justify-between",
                                 {
                                   "border-primary": active || checked,
                                 },
                               )
                             }
                           >
-                            <span className="felx items-center">
+                            <span className="flex items-center">
                               <span className="flex flex-col text-sm">
                                 <RadioGroup.Label
-                                  as="span"
                                   className="font-medium text-gray-900"
+                                  as="span"
                                 >
                                   {option.label}
                                 </RadioGroup.Label>
@@ -364,7 +366,10 @@ const DesignConfigurator = ({
                               </span>
                             </span>
 
-                            <RadioGroup.Description as="span">
+                            <RadioGroup.Description
+                              as="span"
+                              className="mt-2 flex text-sm sm:ml-4 sm:mt-0 sm:flex-col sm:text-right"
+                            >
                               <span className="font-medium text-gray-900">
                                 {formatPrice(option.price / 100)}
                               </span>
@@ -375,11 +380,11 @@ const DesignConfigurator = ({
                     </RadioGroup>
                   ),
                 )}
-                {/* <div>material</div> */}
               </div>
             </div>
           </div>
         </ScrollArea>
+
         <div className="h-16 w-full bg-white px-8">
           <div className="h-px w-full bg-zinc-200" />
           <div className="flex h-full w-full items-center justify-end">
@@ -391,9 +396,11 @@ const DesignConfigurator = ({
                 )}
               </p>
               <Button
-                size="sm"
-                className="w-full"
+                // isLoading={isPending}
+                disabled={isPending}
+                // loadingText="Saving"
                 onClick={() =>
+                  // saveConfiguration()
                   saveConfig({
                     color: options.color.value,
                     finish: options.finish.value,
@@ -402,6 +409,8 @@ const DesignConfigurator = ({
                     configId,
                   })
                 }
+                size="sm"
+                className="w-full"
               >
                 Continue
                 <ArrowRight className="ml-1.5 inline h-4 w-4" />

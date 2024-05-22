@@ -12,7 +12,7 @@ import { buttonVariants } from "~/components/ui/button";
 // import LoginForm from "~/auth/LoginForm";
 
 export default async function RootPage() {
-  const session = await auth();
+  // const session = await auth();
   return (
     // <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
     <div className="grainy-light bg-slate-50">

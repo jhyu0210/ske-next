@@ -162,6 +162,7 @@ const ProductReviews = () => {
       <img
         aria-hidden="true"
         src="/what-people-are-buying.png"
+        alt="what-people-are-buying"
         className="absolute -left-32 top-1/3 hidden select-none xl:block"
       />
 

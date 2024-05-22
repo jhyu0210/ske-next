@@ -28,6 +28,7 @@ export const ourFileRouter = {
             width: width || 500,
           },
         });
+        console.log("Core Data::: ", configuration?.id);
         return { configId: configuration.id };
       } else {
         const updatedConfiguration = await db.configuration.update({
