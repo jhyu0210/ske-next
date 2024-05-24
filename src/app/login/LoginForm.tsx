@@ -44,7 +44,7 @@
 // export default LoginForm;
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -64,6 +64,8 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+// import { getAuthStatus } from "./action";
 
 const formSchema = z.object({
   email: z
@@ -81,24 +83,47 @@ const formSchema = z.object({
 });
 
 const LoginForm = () => {
+  const [configId, setConfigId] = useState<string | null>(null);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    const configurationId = localStorage.getItem("configurationId");
+    console.log("configurationId", configurationId);
+    if (configurationId) setConfigId(configurationId);
+  }, []);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { email: "", password: "" },
   });
 
-  const router = useRouter();
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log("Submitting values::: ", values);
+    let redirectUrl = "/";
+
+    if (configId) {
+      redirectUrl = `/configure/preview/?id=${configId}`;
+    }
+    console.log("Form RedirectUrl:::", redirectUrl);
+
     const response = await signIn("credentials", {
       email: values.email,
       password: values.password,
-      redirectTo: "/",
+      redirect: false,
     });
 
-    if (!response?.error) {
+    console.log("response", response);
+    if (response?.ok) {
+      localStorage.removeItem("configurationId");
+      router.push(redirectUrl);
+    } else {
       router.push("/");
     }
+    // if (!response?.error) {
+    //   console.log("Error");
+    //   // router.push("/");
+    // }
 
     toast.success("You are now signed in!");
   }

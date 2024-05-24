@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "~/auth";
-import LoginForm from "~/components/LoginForm";
+import LoginForm from "~/app/login/LoginForm";
 import MaxWidthWrapper from "~/components/MaxWidthWrapper";
 
 const loginForm = async () => {

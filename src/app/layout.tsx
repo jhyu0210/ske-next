@@ -4,8 +4,9 @@ import { Inter, Recursive } from "next/font/google";
 import { Toaster } from "sonner";
 import Navbar from "~/components/Navbar";
 import Provider from "~/components/Provider";
-// import { Provider } from "@radix-ui/react-toast";
-
+import { SessionProvider } from "next-auth/react";
+// import getServerSession from "next-auth";
+import { auth } from "~/auth";
 const recursive = Recursive({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -17,22 +18,25 @@ export const metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth();
   return (
     <html lang="en">
       {/* <body className={`font-sans ${recursive.variable}`}> */}
       <body className={recursive.className}>
-        <Navbar />
-        <main className="grainy-light flex min-h-[calc(100vh-3.5rem-1px)] flex-col">
-          <div className="flex h-full flex-1 flex-col">
-            <Provider>{children}</Provider>
-          </div>
-        </main>
-        <Toaster />
+        <SessionProvider session={session}>
+          <Navbar />
+          <main className="grainy-light flex min-h-[calc(100vh-3.5rem-1px)] flex-col">
+            <div className="flex h-full flex-1 flex-col">
+              <Provider>{children}</Provider>
+            </div>
+          </main>
+          <Toaster />
+        </SessionProvider>
       </body>
     </html>
   );
