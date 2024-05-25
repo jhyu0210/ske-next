@@ -12,14 +12,16 @@ import { cn, formatPrice } from "~/lib/utils";
 import { createCheckoutSession } from "./action";
 import { useRouter } from "next/navigation";
 import { useToast } from "~/components/ui/use-toast";
-import { useSession } from "next-auth/react";
 import LoginModal from "~/components/LoginModal";
+import { auth } from "~/auth";
+import { useSession } from "next-auth/react";
 
 const DesignPreview = ({ configuration }: { configuration: Configuration }) => {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
   const { data: session } = useSession();
+  // const session = await auth();
 
   const user = session?.user;
   const { id } = configuration;

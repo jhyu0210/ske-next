@@ -24,9 +24,9 @@ const OrderReceivedEmail = ({
   orderDate: string
 }) => {
   const baseUrl =
-    process.env.NODE_ENV === 'development'
-      ? 'http://localhost:3000'
-      : 'https://casecobra.vercel.app'
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : "https://ske-next.vercel.app";
 
   return (
     <Html>
@@ -37,10 +37,10 @@ const OrderReceivedEmail = ({
           <Section style={message}>
             <Img
               src={`${baseUrl}/snake-3.png`}
-              width='65'
-              height='73'
-              alt='delivery snake'
-              style={{ margin: 'auto' }}
+              width="65"
+              height="73"
+              alt="delivery snake"
+              style={{ margin: "auto" }}
             />
             <Heading style={global.heading}>Thank you for your order!</Heading>
             <Text style={global.text}>
@@ -56,18 +56,18 @@ const OrderReceivedEmail = ({
           <Section style={global.defaultPadding}>
             <Text style={adressTitle}>Shipping to: {shippingAddress.name}</Text>
             <Text style={{ ...global.text, fontSize: 14 }}>
-              {shippingAddress.street}, {shippingAddress.city},{' '}
+              {shippingAddress.street}, {shippingAddress.city},{" "}
               {shippingAddress.state} {shippingAddress.postalCode}
             </Text>
           </Section>
           <Hr style={global.hr} />
           <Section style={global.defaultPadding}>
-            <Row style={{ display: 'inline-flex gap-16', marginBottom: 40 }}>
+            <Row style={{ display: "inline-flex gap-16", marginBottom: 40 }}>
               <Column style={{ width: 170 }}>
                 <Text style={global.paragraphWithBold}>Order Number</Text>
                 <Text style={track.number}>{orderId}</Text>
               </Column>
-              <Column style={{marginLeft: 20}}>
+              <Column style={{ marginLeft: 20 }}>
                 <Text style={global.paragraphWithBold}>Order Date</Text>
                 <Text style={track.number}>{orderDate}</Text>
               </Column>
@@ -83,21 +83,22 @@ const OrderReceivedEmail = ({
                   ...footer.text,
                   paddingTop: 30,
                   paddingBottom: 30,
-                }}>
+                }}
+              >
                 Please contact us if you have any questions. (If you reply to
                 this email, we won't be able to see it.)
               </Text>
             </Row>
             <Row>
               <Text style={footer.text}>
-                © CaseCobra, Inc. All Rights Reserved.
+                © SKE-NEXT, Inc. All Rights Reserved.
               </Text>
             </Row>
           </Section>
         </Container>
       </Body>
     </Html>
-  )
+  );
 }
 
 export default OrderReceivedEmail

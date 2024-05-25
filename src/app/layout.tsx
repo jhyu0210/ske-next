@@ -7,7 +7,6 @@ import Provider from "~/components/Provider";
 import { SessionProvider } from "next-auth/react";
 // import getServerSession from "next-auth";
 import { auth } from "~/auth";
-import { constructMetadata } from "~/lib/utils";
 const recursive = Recursive({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -18,8 +17,6 @@ const recursive = Recursive({
 //   description: "Phone case design",
 //   icons: [{ rel: "icon", url: "/favicon.ico" }],
 // };
-
-export const metadata = constructMetadata();
 
 export default async function RootLayout({
   children,
@@ -32,14 +29,14 @@ export default async function RootLayout({
       {/* <body className={`font-sans ${recursive.variable}`}> */}
       <body className={recursive.className}>
         <Navbar />
-        <SessionProvider session={session}>
-          <main className="grainy-light flex min-h-[calc(100vh-3.5rem-1px)] flex-col">
-            <div className="flex h-full flex-1 flex-col">
+        <main className="grainy-light flex min-h-[calc(100vh-3.5rem-1px)] flex-col">
+          <div className="flex h-full flex-1 flex-col">
+            <SessionProvider session={session}>
               <Provider>{children}</Provider>
-            </div>
-          </main>
-          <Toaster />
-        </SessionProvider>
+            </SessionProvider>
+          </div>
+        </main>
+        <Toaster />
       </body>
     </html>
   );

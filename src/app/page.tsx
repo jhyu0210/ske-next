@@ -193,7 +193,7 @@ export default async function RootPage() {
                   alt="user"
                 />
                 <div className="flex flex-col">
-                  <p className="font-semibold">Josh</p>
+                  <p className="font-semibold">James</p>
                   <div className="flex items-center gap-1.5 text-zinc-600">
                     <Check className="h-4 w-4 stroke-[3px] text-green-600" />
                     <p className="text-sm">Verified Purchase</p>
