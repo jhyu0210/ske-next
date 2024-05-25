@@ -10,7 +10,7 @@ const loginForm = async () => {
   }
   return (
     <MaxWidthWrapper>
-      <LoginForm />;
+      <LoginForm />
     </MaxWidthWrapper>
   );
 };
