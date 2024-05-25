@@ -10,7 +10,7 @@ const Navbar = async () => {
   // const user = await getUser()
   const session = await auth();
   const user = session?.user;
-  // console.log(">>>>>><<<<< Nav Session", session);
+  console.log(">>>>>><<<<< Nav Session", session);
   const isAdmin = user?.email === process.env.ADMIN_EMAIL;
 
   return (
