@@ -7,9 +7,9 @@ import { signIn } from "~/auth";
 import { db } from "~/server/db";
 
 export async function doLogin(formData: FormData) {
-  //   const action = formData.get("action");
-  //   console.log("Action", action);
-  // await signIn(action,{redirectTo:'/home'})
+    const action = formData.get("action");
+    console.log("Action", action);
+  await signIn(action,{redirectTo:'/home'})
   await signIn("credentials", {
     username: formData.get("username"),
     email: formData.get("email"),
